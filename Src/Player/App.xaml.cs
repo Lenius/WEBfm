@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Windows;
-using System.Linq;
 
 namespace Player
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -37,25 +35,22 @@ namespace Player
 
                 using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Player.Dist.NAudio.dll"))
                 {
-                    var assemblyData = new byte[stream.Length];
-                    stream.Read(assemblyData, 0, assemblyData.Length);
-                    AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
-                    return Assembly.Load(assemblyData);
+                    if (stream != null)
+                    {
+                        var assemblyData = new byte[stream.Length];
+                        stream.Read(assemblyData, 0, assemblyData.Length);
+                        AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+                        return Assembly.Load(assemblyData);
+                    }
+                    return null;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
         }
 
-        public bool IsRunning
-        {
-            get
-            {
-                return System.Diagnostics.Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location)).Count() > 1;
-
-            }
-        }
+        public bool IsRunning => System.Diagnostics.Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location)).Length > 1;
     }
 }

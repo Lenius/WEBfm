@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Diagnostics;
 using System.IO;
 using System.Media;
 using System.Threading.Tasks;
@@ -15,15 +14,14 @@ namespace Player
 {
     public class PlayerViewModel : DependencyObject, IDisposable
     {
-        private IWavePlayer wavePlayer;
-        private static AudioFileReader audioReader;
-        private SoundPlayer soundPlayer;
-        private Timer oneSecTimer;
-        private static Timer autoTimer;
+        private IWavePlayer _wavePlayer;
+        private static AudioFileReader _audioReader;
+        private SoundPlayer _soundPlayer;
+        private static Timer _autoTimer;
         private int _counter;
-        public Hashtable timers;
-        private Stream str;
-        private static int _dingInterval = 0;
+        public Hashtable Timers;
+        private Stream _str;
+        private static int _dingInterval;
 
         public PlayerViewModel()
         {
@@ -31,14 +29,14 @@ namespace Player
 
             Status = "Waiting for WEBfm";
 
-            timers = new Hashtable();
+            Timers = new Hashtable();
 
-            oneSecTimer = new Timer { Interval = 1000 };
+            var oneSecTimer = new Timer { Interval = 1000 };
             oneSecTimer.Elapsed += OneSecTimer_Elapsed;
             oneSecTimer.Enabled = true;
 
-            autoTimer = new Timer { Interval = 700 };
-            autoTimer.Elapsed += AutoTimer_Elapsed;
+            _autoTimer = new Timer { Interval = 700 };
+            _autoTimer.Elapsed += AutoTimer_Elapsed;
 
             Init();
         }
@@ -47,7 +45,7 @@ namespace Player
         {
             try
             {
-                if (wavePlayer == null)
+                if (_wavePlayer == null)
                 {
                     return;
                 }
@@ -55,36 +53,37 @@ namespace Player
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
                 {
                     var hour = DateTime.Now.Hour;
-                    var t = (CheckBox)timers[hour];
-                    if ((bool)t.IsChecked)
+                    var t = (CheckBox)Timers[hour];
+                    if (t.IsChecked != null && (bool)t.IsChecked)
                     {
-                        wavePlayer.Play();
+                        _wavePlayer.Play();
                     }
                     else
                     {
-                        wavePlayer.Stop();
+                        _wavePlayer.Stop();
                     }
                 }));
             }
-            catch (Exception te) { }
-            Debug.WriteLine("Autotimer" + DateTime.Now);
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         private async void Init()
         {
-            await Task.Run((Action)(() =>
+            await Task.Run(() =>
             {
-                soundPlayer = new SoundPlayer();
+                _soundPlayer = new SoundPlayer();
 
-                audioReader = new AudioFileReader("http://netradio.webfm.dk/Mobil");
-                audioReader.Volume = 0.2f;
+                _audioReader = new AudioFileReader("http://netradio.webfm.dk/Mobil") {Volume = 0.2f};
 
-                wavePlayer = new WaveOutEvent();
-                wavePlayer.Init(audioReader);
+                _wavePlayer = new WaveOutEvent();
+                _wavePlayer.Init(_audioReader);
 
-                str = Properties.Resources.ding6;
-                soundPlayer.Stream = str;
-                soundPlayer.LoadAsync();
+                _str = Properties.Resources.ding6;
+                _soundPlayer.Stream = _str;
+                _soundPlayer.LoadAsync();
 
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
                 {
@@ -93,14 +92,14 @@ namespace Player
                     Ready = true;
                 }));
 
-            }));
+            });
         }
 
         private void OneSecTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
             {
-                NextDing = _dingInterval != 0 ? string.Format("Næste ding om : {0} sek", (_dingInterval - _counter)) : "";
+                NextDing = _dingInterval != 0 ? $"Næste ding om : {(_dingInterval - _counter)} sek" : "";
             }));
 
             Ding();
@@ -120,20 +119,20 @@ namespace Player
             }
             _counter = 0;
 
-            await Task.Run((Action)(() =>
+            await Task.Run(() =>
             {
-                soundPlayer.PlaySync();
-            }));
+                _soundPlayer.PlaySync();
+            });
         }
 
         public void Play()
         {
-            wavePlayer?.Play();
+            _wavePlayer?.Play();
         }
 
         public void Stop()
         {
-            wavePlayer?.Stop();
+            _wavePlayer?.Stop();
         }
 
 
@@ -146,7 +145,7 @@ namespace Player
 
         public static void OnVolumePropertyChanged(DependencyObject dObj, DependencyPropertyChangedEventArgs e)
         {
-            audioReader.Volume = (float)e.NewValue;
+            _audioReader.Volume = (float)e.NewValue;
         }
 
         public float Volume
@@ -170,7 +169,7 @@ namespace Player
 
         private static void OnAutoPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            autoTimer.Enabled = (bool)e.NewValue;
+            _autoTimer.Enabled = (bool)e.NewValue;
         }
 
         public bool AutoPlay
@@ -219,11 +218,14 @@ namespace Player
         {
             try
             {
-                wavePlayer?.Dispose();
-                soundPlayer?.Dispose();
-                audioReader?.Dispose();
+                _wavePlayer?.Dispose();
+                _soundPlayer?.Dispose();
+                _audioReader?.Dispose();
             }
-            catch (Exception ed) { }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
     }
 }

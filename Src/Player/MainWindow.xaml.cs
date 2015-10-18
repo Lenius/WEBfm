@@ -10,7 +10,7 @@ namespace Player
     public partial class MainWindow : IDisposable
     {
 
-        private PlayerViewModel ViewModel;
+        private PlayerViewModel _viewModel;
 
         public MainWindow()
         {
@@ -22,12 +22,12 @@ namespace Player
         {
             try
             {
-                DataContext = ViewModel = new PlayerViewModel();
+                DataContext = _viewModel = new PlayerViewModel();
                 AddCheckboxes();
             }
             catch (Exception)
             {
-
+                // ignored
             }
         }
 
@@ -45,42 +45,37 @@ namespace Player
                         c.IsChecked = true;
                     }
 
-                    if (i != 0)
-                    {
-                        c.Margin = new Thickness(2, 2, 2, 2);
-                    }
-                    else
-                    {
-                        c.Margin = new Thickness(0, 2, 2, 2);
-                    }
+                    c.Margin = i != 0 ? new Thickness(2, 2, 2, 2) : new Thickness(0, 2, 2, 2);
 
-                    ViewModel.timers.Add(i, c);
-                    hours.Children.Add(c);
+                    _viewModel.Timers.Add(i, c);
+                    Hours.Children.Add(c);
                 }
             }
-            catch (Exception eb) { }
-
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
 
         public void Dispose()
         {
-            ViewModel?.Dispose();
+            _viewModel?.Dispose();
         }
 
         private void BtnPlay(object sender, RoutedEventArgs e)
         {
-            ViewModel?.Play();
+            _viewModel?.Play();
         }
 
         private void BtnStop(object sender, RoutedEventArgs e)
         {
-            ViewModel?.Stop();
+            _viewModel?.Stop();
         }
 
         private void BtnExit(object sender, RoutedEventArgs e)
         {
-            ViewModel.Dispose();
+            _viewModel.Dispose();
             Close();
         }
     }

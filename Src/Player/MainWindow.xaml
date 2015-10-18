@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Player"
         mc:Ignorable="d"
         Title="WEBfm" Height="415.093" Width="414.667" Style="{StaticResource {x:Type Window}}" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
@@ -45,7 +44,7 @@
                     <Button Content="Ding" Name="DingButton"  Margin="15,0,0,0"  IsEnabled="{Binding Ready}" Width="42" />
                 </StackPanel>
                 <TextBlock Margin="10,0,0,0" Text="Vælg timer fra 0 -23" VerticalAlignment="Center"></TextBlock>
-                <StackPanel Orientation="Horizontal" Margin="10,0,5,0" Name="hours"/>
+                <StackPanel Orientation="Horizontal" Margin="10,0,5,0" Name="Hours"/>
             </StackPanel>
         </DockPanel>
     </Grid>
