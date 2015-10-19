@@ -37,7 +37,7 @@
                     <TextBlock Margin="5,0,0,0" Text="Automatisk afspilning" VerticalAlignment="Center"></TextBlock>
                     <TextBlock Margin="45,0,0,0" Text="Ding interval" VerticalAlignment="Center"></TextBlock>
                     <TextBox Name="DingInterval" TextAlignment="Center" Margin="5,0,0,0"  Text="{Binding DingInterval, UpdateSourceTrigger=PropertyChanged}" Width="40" VerticalAlignment="Center" HorizontalAlignment="Center" IsEnabled="{Binding Ready}"></TextBox>
-                    <Button Content="Ding" Name="DingButton"  Margin="15,0,0,0"  IsEnabled="{Binding Ready}" Width="42" />
+                    <Button Content="Ding" Name="DingButton"  Margin="15,0,0,0" Click="BtnDing" IsEnabled="{Binding Ready}" Width="42" />
                 </StackPanel>
                 <TextBlock Margin="10,0,0,0" Text="Vælg timer fra 0 -23" VerticalAlignment="Center"></TextBlock>
                 <StackPanel Orientation="Horizontal" Margin="10,0,5,0" Name="Hours"/>

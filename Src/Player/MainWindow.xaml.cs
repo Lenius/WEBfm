@@ -73,9 +73,14 @@ namespace Player
             _viewModel?.Stop();
         }
 
+        private void BtnDing(object sender, RoutedEventArgs e)
+        {
+            _viewModel?.Ding();
+        }
+
         private void BtnExit(object sender, RoutedEventArgs e)
         {
-            _viewModel.Dispose();
+            _viewModel?.Dispose();
             Close();
         }
     }
