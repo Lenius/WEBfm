@@ -25,20 +25,27 @@ namespace Player
 
         public PlayerViewModel()
         {
-            _counter = 0;
+            try
+            {
+                _counter = 0;
 
-            Status = "Waiting for WEBfm";
+                Status = "Waiting for WEBfm";
 
-            Timers = new Hashtable();
+                Timers = new Hashtable();
 
-            var oneSecTimer = new Timer { Interval = 1000 };
-            oneSecTimer.Elapsed += OneSecTimer_Elapsed;
-            oneSecTimer.Enabled = true;
+                var oneSecTimer = new Timer { Interval = 1000 };
+                oneSecTimer.Elapsed += OneSecTimer_Elapsed;
+                oneSecTimer.Enabled = true;
 
-            _autoTimer = new Timer { Interval = 700 };
-            _autoTimer.Elapsed += AutoTimer_Elapsed;
+                _autoTimer = new Timer { Interval = 700 };
+                _autoTimer.Elapsed += AutoTimer_Elapsed;
 
-            Init();
+                Init();
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         private void AutoTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -76,7 +83,7 @@ namespace Player
             {
                 _soundPlayer = new SoundPlayer();
 
-                _audioReader = new AudioFileReader("http://netradio.webfm.dk/Mobil") {Volume = 0.2f};
+                _audioReader = new AudioFileReader("http://netradio.webfm.dk/Mobil") { Volume = 0.2f };
 
                 _wavePlayer = new WaveOutEvent();
                 _wavePlayer.Init(_audioReader);
@@ -102,10 +109,10 @@ namespace Player
                 NextDing = _dingInterval != 0 ? $"Næste ding om : {(_dingInterval - _counter)} sek" : "";
             }));
 
-            Ding();
+            DingFunction();
         }
 
-        private async void Ding()
+        private async void DingFunction()
         {
             if (_dingInterval <= 0)
             {
@@ -121,7 +128,15 @@ namespace Player
 
             await Task.Run(() =>
             {
-                _soundPlayer.PlaySync();
+                _soundPlayer?.PlaySync();
+            });
+        }
+
+        public async void Ding()
+        {
+            await Task.Run(() =>
+            {
+                _soundPlayer?.PlaySync();
             });
         }
 
