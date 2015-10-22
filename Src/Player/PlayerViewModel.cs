@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Media;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using NAudio.Wave;
@@ -19,6 +21,7 @@ namespace Player
         private SoundPlayer _soundPlayer;
         private static Timer _autoTimer;
         private int _counter;
+        private int _watchdog;
         public Hashtable Timers;
         private Stream _str;
         private static int _dingInterval;
@@ -28,6 +31,7 @@ namespace Player
             try
             {
                 _counter = 0;
+                _watchdog = 0;
 
                 Status = "Waiting for WEBfm";
 
@@ -108,8 +112,27 @@ namespace Player
             {
                 NextDing = _dingInterval != 0 ? $"Næste ding om : {(_dingInterval - _counter)} sek" : "";
             }));
-
+            Playing();
             DingFunction();
+        }
+
+        private async void Playing()
+        {
+            //http://www.webfm.dk/webplayer/data.php
+            if ((_watchdog % 5) == 0)
+            {
+                UpdatePlayingNowSong(await new WebClient().DownloadStringTaskAsync("http://www.webfm.dk/webplayer/data.php"));
+            }
+            _watchdog++;
+        }
+
+        private void UpdatePlayingNowSong(string s)
+        {
+            Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+            {
+                PlayingNowSong = s;
+            }));
+            Debug.WriteLine(_watchdog);
         }
 
         private async void DingFunction()
@@ -148,6 +171,15 @@ namespace Player
         public void Stop()
         {
             _wavePlayer?.Stop();
+        }
+
+        public static readonly DependencyProperty PlayingNowSongProperty = DependencyProperty.Register(
+            "PlayingNowSong", typeof(string), typeof(PlayerViewModel), new PropertyMetadata(default(string)));
+
+        public string PlayingNowSong
+        {
+            get { return (string)GetValue(PlayingNowSongProperty); }
+            set { SetValue(PlayingNowSongProperty, value); }
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -39,7 +40,7 @@ namespace Player
                 for (int i = 0; i < 24; i++)
                 {
                     var c = new CheckBox { ToolTip = i + " hour" };
-
+             
                     if (hour == i)
                     {
                         c.IsChecked = true;
@@ -82,6 +83,11 @@ namespace Player
         {
             _viewModel?.Dispose();
             Close();
+        }
+
+        private void BtnWEBfm(object sender, RoutedEventArgs e)
+        {
+            Process.Start("http://www.webfm.dk/");
         }
     }
 }

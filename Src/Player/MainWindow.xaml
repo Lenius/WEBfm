@@ -4,22 +4,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="WEBfm" Height="415" Width="415" Style="{StaticResource {x:Type Window}}" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="{Binding Status}" Height="415" Width="415" Style="{StaticResource {x:Type Window}}" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <DockPanel>
-            
+
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
                     <MenuItem Header="_Exit" Click="BtnExit" />
                 </MenuItem>
+                <MenuItem Header="_About">
+                    <MenuItem Header="_WEBfm" Click="BtnWEBfm" />
+                </MenuItem>
             </Menu>
-            
+
             <StatusBar DockPanel.Dock="Bottom" Margin="5,0,5,0">
                 <StatusBarItem>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Status}" />
-                        <Separator />
-                        <TextBlock Text="{Binding NextDing}" Margin="60,0,0,0" />
+                        <TextBlock Text="{Binding NextDing}" Margin="0,0,0,0"/>
+                        <Separator Width="10" />
+                        <TextBlock Text="{Binding PlayingNowSong}" Margin="0,0,0,0" />
                     </StackPanel>
 
                 </StatusBarItem>
@@ -27,8 +30,8 @@
             <StackPanel>
                 <Image Source="Assets/webfm.png"></Image>
                 <StackPanel Orientation="Horizontal" Margin="0" VerticalAlignment="Center">
-                    <Button  Margin="10" x:Name="Play" Click="BtnPlay" Content="Play" Width="50" ToolTip="Play" IsEnabled="{Binding Ready}"/>
-                    <Button  Margin="10"  x:Name="Stop" Click="BtnStop" Content="Stop" Width="50" ToolTip="Stop" IsEnabled="{Binding Ready}"/>
+                    <Button  Margin="10" x:Name="Play" Click="BtnPlay" Content="Play" MinWidth="50" ToolTip="Play" IsEnabled="{Binding Ready}"/>
+                    <Button  Margin="10"  x:Name="Stop" Click="BtnStop" Content="Stop" MinWidth="50" ToolTip="Stop" IsEnabled="{Binding Ready}"/>
                     <TextBlock Margin="30,0,10,0" Text="Volume" VerticalAlignment="Center"></TextBlock>
                     <Slider Width="104" Maximum="1" Value="{Binding Volume}" Name="Volume" VerticalAlignment="Center" TickFrequency="0.04" ToolTip="Volume" IsEnabled="{Binding Ready}" />
                 </StackPanel>
@@ -39,7 +42,9 @@
                     <TextBox Name="DingInterval" TextAlignment="Center" Margin="5,0,0,0"  Text="{Binding DingInterval, UpdateSourceTrigger=PropertyChanged}" Width="40" VerticalAlignment="Center" HorizontalAlignment="Center" IsEnabled="{Binding Ready}"></TextBox>
                     <Button Content="Ding" Name="DingButton"  Margin="15,0,0,0" Click="BtnDing" IsEnabled="{Binding Ready}" Width="42" />
                 </StackPanel>
-                <TextBlock Margin="10,0,0,0" Text="Vælg timer fra 0 -23" VerticalAlignment="Center"></TextBlock>
+
+                <TextBlock Margin="10,0,0,0" Text="Vælg timer fra 0-23" VerticalAlignment="Center"></TextBlock>
+
                 <StackPanel Orientation="Horizontal" Margin="10,0,5,0" Name="Hours"/>
             </StackPanel>
         </DockPanel>
